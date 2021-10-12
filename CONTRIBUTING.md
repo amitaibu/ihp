@@ -156,7 +156,7 @@ The errors comes from changes to the Schema Compiler, so `build/Generated/Types.
 ```
 nix-shell
 ghci
-:l IHP/IHP/SchemaCompiler.hs
+:l IHP/SchemaCompiler.hs
 compile
 ```
 
