@@ -16,13 +16,14 @@ import IHP.HSX.QQ (hsx)
 import IHP.Controller.Param (paramOrNothing)
 
 import IHP.View.Classes
+import IHP.View.CSSFramework
 import qualified Network.Wai as Wai
 import qualified Network.HTTP.Types.URI as Query
 import IHP.ViewSupport (theRequest)
 import qualified Data.Containers.ListUtils as List
 
 
--- | Render a navigation for your pagination. This is to be used in your view whenever 
+-- | Render a navigation for your pagination. This is to be used in your view whenever
 -- to allow users to change pages, including "Next" and "Previous".
 renderPagination :: (?context::ControllerContext) => Pagination -> Html
 renderPagination pagination@Pagination {currentPage, window, pageSize} =
@@ -56,12 +57,13 @@ renderPagination pagination@Pagination {currentPage, window, pageSize} =
 
     |]
         where
+            cssFramework = ?formContext |> get #cssFramework
             maxItemsGenerator = let
                 oneOption :: Int -> Html
                 oneOption n = [hsx|<option value={show n} selected={n == pageSize} data-url={itemsPerPageUrl n}>{n} items per page</option>|]
                 in
                     [hsx|{forEach [10,20,50,100,200] oneOption}|]
-            
+
             nextClass = classes ["page-item", ("disabled", not $ hasNextPage pagination)]
             prevClass = classes ["page-item", ("disabled", not $ hasPreviousPage pagination)]
 

@@ -17,6 +17,7 @@ module IHP.View.Types
 where
 
 import IHP.Prelude hiding (div)
+import IHP.Pagination.Types
 import qualified Text.Blaze.Html5 as Blaze
 import IHP.FlashMessages.Types
 import IHP.ModelSupport (Violation)
@@ -121,4 +122,5 @@ data CSSFramework = CSSFramework
     , styledValidationResult :: CSSFramework -> FormField -> Blaze.Html
     -- | Class name for container of validation error message
     , styledValidationResultClass :: Text
+    , styledPagination :: CSSFramework -> Pagination -> Blaze.Html
     }
