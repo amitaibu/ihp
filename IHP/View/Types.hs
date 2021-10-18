@@ -104,6 +104,8 @@ data InputType
 data PaginationView =
     PaginationView
     { cssFramework :: !CSSFramework
+    , pagination :: Pagination -> Blaze.Html -- The main function to be called, but below
+                                             -- could be changed to customize smaller parts.
     , liPrevious :: Pagination -> Blaze.Html -- <li> of previous item
     , liNext :: Pagination -> Blaze.Html -- <li> of next item
     }
