@@ -98,6 +98,16 @@ data InputType
     | FileInput
 
 
+
+-- | Options for customizing the render of a pagination
+data PaginationView =
+    PaginationView
+    {
+        liPrevious :: Pagination -> Blaze.Html -- <li> of previous item
+    ,   liNext :: Pagination -> Blaze.Html -- <li> of next item
+    }
+
+
 -- | Render functions to render with bootstrap etc.
 --
 -- We call this functions with the cssFramework passed to have late binding (like from OOP languages)
@@ -122,5 +132,5 @@ data CSSFramework = CSSFramework
     , styledValidationResult :: CSSFramework -> FormField -> Blaze.Html
     -- | Class name for container of validation error message
     , styledValidationResultClass :: Text
-    , styledPagination :: CSSFramework -> Pagination -> Blaze.Html
+    , styledPagination :: PaginationView
     }
