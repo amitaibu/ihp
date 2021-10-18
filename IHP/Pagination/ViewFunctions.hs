@@ -16,7 +16,6 @@ import IHP.HSX.QQ (hsx)
 import IHP.Controller.Param (paramOrNothing)
 
 import IHP.View.Classes
-import IHP.View.CSSFramework
 import qualified Network.Wai as Wai
 import qualified Network.HTTP.Types.URI as Query
 import IHP.ViewSupport (theRequest)
@@ -57,7 +56,6 @@ renderPagination pagination@Pagination {currentPage, window, pageSize} =
 
     |]
         where
-            cssFramework = ?formContext |> get #cssFramework
             maxItemsGenerator = let
                 oneOption :: Int -> Html
                 oneOption n = [hsx|<option value={show n} selected={n == pageSize} data-url={itemsPerPageUrl n}>{n} items per page</option>|]

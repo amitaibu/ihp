@@ -1,8 +1,9 @@
 module IHP.Pagination.Types where
 
 import IHP.Prelude
+import Text.Blaze.Html (Html)
 
-data Pagination = 
+data Pagination =
     Pagination
     {
         pageSize :: Int     -- the number of items per page
@@ -13,12 +14,20 @@ data Pagination =
     deriving(Show)
 
 -- | Options for customizing a pagination, to be used with 'paginateOptions'.
-data Options = 
-    Options 
+data Options =
+    Options
         {
             maxItems :: Int -- ^ The maximum items per page. Default 50.
         ,   windowSize :: Int -- ^ The size of the window in the page selector. Default 5.
         }
+
+-- | Options for customizing the render of a pagination
+data PaginationView =
+    PaginationView
+    {
+        liPrevious :: Pagination -> Html -- <li> of previous item
+    ,   liNext :: Pagination -> Html -- <li> of next item
+    }
 
 instance SetField "maxItems" Options Int where
     setField value options =
