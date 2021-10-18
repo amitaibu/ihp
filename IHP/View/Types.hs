@@ -13,6 +13,7 @@ module IHP.View.Types
 , CSSFramework (..)
 , HtmlWithContext
 , Layout
+, PaginationView (..)
 )
 where
 
@@ -102,9 +103,9 @@ data InputType
 -- | Options for customizing the render of a pagination
 data PaginationView =
     PaginationView
-    {
-        liPrevious :: Pagination -> Blaze.Html -- <li> of previous item
-    ,   liNext :: Pagination -> Blaze.Html -- <li> of next item
+    { cssFramework :: !CSSFramework
+    , liPrevious :: Pagination -> Blaze.Html -- <li> of previous item
+    , liNext :: Pagination -> Blaze.Html -- <li> of next item
     }
 
 
@@ -132,5 +133,5 @@ data CSSFramework = CSSFramework
     , styledValidationResult :: CSSFramework -> FormField -> Blaze.Html
     -- | Class name for container of validation error message
     , styledValidationResultClass :: Text
-    , styledPagination :: PaginationView
+    , styledPagination :: CSSFramework -> PaginationView -> Blaze.Html
     }

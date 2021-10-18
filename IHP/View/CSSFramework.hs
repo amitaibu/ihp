@@ -156,7 +156,10 @@ instance Default CSSFramework where
 
             styledSubmitButtonClass = ""
 
-            styledPagination cssFramework pagination = mempty
+            styledPagination _ =  PaginationView
+                                {  liPrevious _ _ = mempty
+                                ,  liNext _ _ = mempty
+                                }
 
 bootstrap :: CSSFramework
 bootstrap = def { styledFlashMessage, styledSubmitButtonClass, styledFormGroupClass, styledFormFieldHelp, styledInputClass, styledInputInvalidClass, styledValidationResultClass }
