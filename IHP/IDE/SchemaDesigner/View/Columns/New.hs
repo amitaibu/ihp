@@ -39,7 +39,7 @@ instance View NewColumnView where
                             type="text"
                             class="form-control"
                             autofocus="autofocus"
-                            placeholder="Name"
+                            placeholder="name"
                             data-table-name-singular={singularize tableName}
                             />
                     </div>
