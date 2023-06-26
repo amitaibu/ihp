@@ -28,6 +28,7 @@ import Network.Wai.Test
 import Network.HTTP.Types
 import qualified IHP.ErrorController as ErrorController
 import Data.String.Conversions
+import Data.Text as Text
 import Unsafe.Coerce
 import IHP.ApplicationContext
 
@@ -42,7 +43,10 @@ instance Controller TestController where
     action TestAction = do
         renderPlain "TestAction"
     action TestWithParamAction { .. } = do
-        let output = [plain|isActiveAction {param}: {isActiveAction $ TestWithParamAction param}|]
+        let output = [plain|
+            isActiveAction #{param}: #{isActiveAction $ TestWithParamAction param}
+            isActiveAction bar: #{isActiveAction $ TestWithParamAction "bar"}
+        |]
         renderPlain $ cs output
 
 instance AutoRoute TestController
@@ -63,10 +67,10 @@ instance FrontController RootApplication where
 testGet :: ByteString -> Session SResponse
 testGet url = request $ setPath defaultRequest { requestMethod = methodGet } url
 
-assertSuccess :: ByteString -> SResponse -> IO ()
-assertSuccess body response = do
+assertTextExists :: Text -> SResponse -> IO ()
+assertTextExists body response = do
     response.simpleStatus `shouldBe` status200
-    response.simpleBody `shouldBe` (cs body)
+    Text.isInfixOf body (cs response.simpleBody) `shouldBe` True
 
 config = do
     option Development
@@ -79,4 +83,6 @@ tests :: Spec
 tests = beforeAll (mockContextNoDatabase WebApplication config) do
     describe "isActiveAction" $ do
         it "should return True on the same route" $ withContext do
-            runSession (testGet "/TestWithParamAction?param=foo") application >>= assertSuccess "TestAction"
+            runSession (testGet "test/TestWithParam?param=foo") application >>= assertTextExists "isActiveAction foo: True"
+        it "should return False on a different route" $ withContext do
+            runSession (testGet "test/TestWithParam?param=foo") application >>= assertTextExists "isActiveAction bar: False"
