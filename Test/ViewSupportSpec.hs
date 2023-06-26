@@ -48,7 +48,7 @@ instance Controller TestController where
 instance AutoRoute TestController
 
 instance FrontController WebApplication where
-  controllers = [ startPage TestAction, parseRoute @TestController ]
+  controllers = [ parseRoute @TestController ]
 
 defaultLayout :: Html -> Html
 defaultLayout inner =  [hsx|{inner}|]
@@ -59,9 +59,6 @@ instance InitControllerContext WebApplication where
 
 instance FrontController RootApplication where
     controllers = [ mountFrontController WebApplication ]
-
-instance Worker RootApplication where
-    workers _ = []
 
 testGet :: ByteString -> Session SResponse
 testGet url = request $ setPath defaultRequest { requestMethod = methodGet } url
@@ -81,5 +78,5 @@ application = Server.application ErrorController.handleNotFound
 tests :: Spec
 tests = beforeAll (mockContextNoDatabase WebApplication config) do
     describe "isActiveAction" $ do
-        it "should return True on the same " $ withContext do
+        it "should return True on the same route" $ withContext do
             runSession (testGet "/TestWithParamAction?param=foo") application >>= assertSuccess "TestAction"
