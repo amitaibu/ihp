@@ -5,7 +5,7 @@ Tests for view support functions.
 -}
 {-# LANGUAGE AllowAmbiguousTypes #-}
 
-module Test.RouterSupportSpec where
+module Test.ViewSupportSpec where
 import qualified Prelude
 import ClassyPrelude
 import Test.Hspec
@@ -71,10 +71,6 @@ assertSuccess body response = do
     response.simpleStatus `shouldBe` status200
     response.simpleBody `shouldBe` (cs body)
 
-assertFailure :: SResponse -> IO ()
-assertFailure response = do
-    response.simpleStatus `shouldBe` status400
-
 config = do
     option Development
     option (AppPort 8000)
@@ -86,4 +82,4 @@ tests :: Spec
 tests = beforeAll (mockContextNoDatabase WebApplication config) do
     describe "isActiveAction" $ do
         it "should return True on the same " $ withContext do
-            runSession (testGet "test/TestWithParamAction?param=foo") application >>= assertSuccess "TestAction"
+            runSession (testGet "/TestWithParamAction?param=foo") application >>= assertSuccess "TestAction"
