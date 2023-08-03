@@ -16,6 +16,7 @@ import           Network.Wai.Parse                         (Param (..))
 
 import           IHP.ApplicationContext                    (ApplicationContext (..))
 import qualified IHP.AutoRefresh.Types                     as AutoRefresh
+import           IHP.Controller.Context
 import           IHP.Controller.RequestContext             (RequestBody (..), RequestContext (..))
 import           IHP.ControllerSupport                     (InitControllerContext, Controller, runActionWithNewContext)
 import           IHP.FrameworkConfig                       (ConfigBuilder (..), FrameworkConfig (..))
@@ -112,7 +113,8 @@ withContext action mocking@MockContext{..} = let
 -- | Run a IO action like withContext, only set up a user session first.
 withContextAndUser :: (user ~ CurrentUserRecord, Typeable user) => user -> (ContextParameters application => IO a) -> MockContext application -> IO a
 withContextAndUser user action mocking@MockContext{..} =
-    withContext mocking do
+    withContext action mocking >>
+        do
             let ?requestContext = ?context
             controllerContext <- newControllerContext
             let ?context = controllerContext
