@@ -33,6 +33,7 @@ import qualified Network.Wai.Session
 import qualified Data.Serialize as Serialize
 import qualified Control.Exception as Exception
 import qualified IHP.PGListener as PGListener
+import IHP.LoginSupport.Helper.Controller (CurrentUserRecord)
 
 type ContextParameters application = (?applicationContext :: ApplicationContext, ?context :: RequestContext, ?modelContext :: ModelContext, ?application :: application, InitControllerContext application, ?mocking :: MockContext application)
 
@@ -106,6 +107,21 @@ withContext action mocking@MockContext{..} = let
     ?mocking = mocking
   in do
     action
+
+
+-- | Run a IO action like withContext, only set up a user session first.
+withContextAndUser :: (user ~ CurrentUserRecord, Typeable user) => user -> (ContextParameters application => IO a) -> MockContext application -> IO a
+withContextAndUser user action mocking@MockContext{..} =
+    withContext mocking do
+            let ?requestContext = ?context
+            controllerContext <- newControllerContext
+            let ?context = controllerContext
+            -- Mark the current user as anonymous.
+            putContext user
+
+            context <- freeze ?context
+            let ?context = context
+            pure ()
 
 setupWithContext :: (ContextParameters application => IO a) -> MockContext application -> IO (MockContext application)
 setupWithContext action context = withContext action context >> pure context
